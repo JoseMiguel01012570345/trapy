@@ -21,8 +21,10 @@ def parse_addr(address):
 
     return conn
     
+my_addr=""
 def listen(address: str) -> Conn:
 
+   my_addr=address
    try:
         conn = Conn()
 
@@ -110,21 +112,38 @@ def accept(conn) -> Conn:
 
 def dial(address) -> Conn:
     
-    conn=Conn()
-    
+    conn=Conn()    
     try:
         conn.host_addr=address
+        conn.client_addr=my_addr
+        conn.connection_request=True
     
-    
+        send(conn=conn, data=0)
+        success = recv(conn=conn,length=65536)
+        
+        if success == 1:
+            print("connected")
+        else:
+            print("connection refused")
+        
     except KeyboardInterrupt:
         close(conn=conn)
+    
+    except Exception as e:
+        close(conn=conn)
+        print("an error arose from the accept() function: ", e )
+        return ConnException()
     
     pass
 
 def send(conn: Conn, data: bytes) -> int: 
+
+
     pass
 
 def recv(conn: Conn, length: int) -> bytes:
+
+
     pass
 
 def remove_device(content,addr_client):
